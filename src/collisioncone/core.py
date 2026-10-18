@@ -155,7 +155,11 @@ def run_case(case, method):
         result["ttc_interval"] = np.quantile(ttc, [0.05, 0.95]).tolist() if len(ttc) else None
         result["cpa_interval"] = np.quantile(distance, [0.05, 0.95]).tolist()
         result["risk"] = float(
-            np.mean(approaching & (-range_ / np.minimum(closing, -1e-8) < case["risk_horizon"]))
+            np.mean(
+                approaching
+                & (np.abs(beta_rate) <= case["bearing_rate_limit"])
+                & (-range_ / np.minimum(closing, -1e-8) < case["risk_horizon"])
+            )
         )
     return result
 
